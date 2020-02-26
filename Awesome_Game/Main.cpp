@@ -1,35 +1,89 @@
 #include "SDL/include/SDL.h"
 #pragma comment( lib, "SDL/libx86/SDL2.lib" )
 #pragma comment( lib, "SDL/libx86/SDL2main.lib" )
-#include <iostream>
+#include <stdio.h>
+
+//Screen dimension constants
+const int SCREEN_WIDTH = 1000;
+const int SCREEN_HEIGHT = 800;
+
+void move(bool* exit)
+{
+
+	if (SDLK_ESCAPE) {
+		*(exit) = true;
+		
+	}
+}
+
+int main(int argc, char* args[])
+{
+	//The window we'll be rendering to
+	SDL_Window* window = NULL;
+
+	//The surface contained by the window
+
+	SDL_Renderer* renderer = NULL;
+
+	//Definir keys
+
+	Uint8* Keys;
+
+	//Rect properties
+	SDL_Rect rect = { 500,350,32,32 };
 
 
-int main(int argc, char** argv) {
-	std::cout << "Have " << argc << " arguments:" << std::endl;
-	for (int i = 0; i < argc; ++i) {
-		std::cout << argv[i] << std::endl;
+
+	bool exit = false;
+
+	//Initialize SDL
+	if (SDL_Init(SDL_INIT_VIDEO) < 0)
+	{
+		printf("SDL could not initialize! SDL_Error: %s\n", SDL_GetError());
 	}
-	//Inicia todos los sistemas, y da mensaje de error si no van..	
-	if (SDL_Init(SDL_INIT_VIDEO) != 0) {
-		std::cout << "SDL_Init Error: " << SDL_GetError() << std::endl;
-		return 1;
+	else
+	{
+		//Create window
+		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+		if (window == NULL)
+		{
+			printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
+		}
+		else
+		{
+			
+			while (exit == false)
+			{
+
+				//Get window surface
+				renderer = SDL_CreateRenderer(window, -1, 0);
+
+				//Render Color
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				//Clar Renderer
+				SDL_RenderClear(renderer);
+
+				//Render Geometry
+				SDL_Rect rect = { 500,350,32,32 };
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				SDL_RenderFillRect(renderer, &rect);
+
+				//Update the surface
+				SDL_RenderPresent(renderer);
+
+				//Key
+				move(&exit);
+			}
+
+			//Wait two seconds
+			//SDL_Delay(2000);
+		}
 	}
 
-	SDL_Window* win = SDL_CreateWindow("Hello World!", 100, 100, 1920, 1080, SDL_WINDOW_SHOWN);
-	if (win == nullptr) {
-		std::cout << "SDL_CreateWindow Error: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		return 1;
-	}
 
-	SDL_Renderer* ren = SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (ren == nullptr) {
-		SDL_DestroyWindow(win);
-		std::cout << "SDL_CreateRenderer Error: " << SDL_GetError() << std::endl;
-		SDL_Quit();
-		return 1;
-	}
-	SDL_Delay(99000);
+
+	//Quit SDL subsystems
+	SDL_Quit();
 
 	return 0;
 }
