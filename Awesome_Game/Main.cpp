@@ -7,17 +7,13 @@
 const int SCREEN_WIDTH = 1000;
 const int SCREEN_HEIGHT = 800;
 
-void move(bool* exit)
-{
 
-	if (SDLK_ESCAPE) {
-		*(exit) = true;
-		
-	}
-}
 
 int main(int argc, char* args[])
 {
+	bool exit = false;
+	int x = 500, y = 400, xb = 2000, yb = 2000;
+
 	//The window we'll be rendering to
 	SDL_Window* window = NULL;
 
@@ -27,14 +23,14 @@ int main(int argc, char* args[])
 
 	//Definir keys
 
-	Uint8* Keys;
+	Uint32* key;
+
+	//Bullet properties
+	SDL_Rect Bullet = { 600, 500, 10, 5 };
 
 	//Rect properties
 	SDL_Rect rect = { 500,350,32,32 };
 
-
-
-	bool exit = false;
 
 	//Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
@@ -43,7 +39,7 @@ int main(int argc, char* args[])
 	}
 	else
 	{
-		//Create window
+
 		window = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 		if (window == NULL)
 		{
@@ -51,28 +47,87 @@ int main(int argc, char* args[])
 		}
 		else
 		{
-			
+			//Render Geometry
+			SDL_Rect rect = { x,y,32,32 };
+			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+			SDL_RenderFillRect(renderer, &rect);
+
+			//Get window surface
+			renderer = SDL_CreateRenderer(window, -1, 0);
+
+			//Render Color
+			SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+			//Clar Renderer
+			SDL_RenderClear(renderer);
+			//Create window
 			while (exit == false)
 			{
 
-				//Get window surface
-				renderer = SDL_CreateRenderer(window, -1, 0);
-
-				//Render Color
-				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-				//Clar Renderer
-				SDL_RenderClear(renderer);
+				
 
 				//Render Geometry
-				SDL_Rect rect = { 500,350,32,32 };
-				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-				SDL_RenderFillRect(renderer, &rect);
+				SDL_Rect rect = { x, y,32,32 };
 
+			
 				//Update the surface
 				SDL_RenderPresent(renderer);
 
 				//Key
-				move(&exit);
+				SDL_Event event;
+
+				while (SDL_PollEvent(&event))
+				{
+					if (event.type == SDL_KEYDOWN)
+					{
+						if (event.key.keysym.sym == SDLK_ESCAPE)
+						{
+							// ESC has been pressed
+							exit = true;
+						}
+						if (event.key.keysym.sym == SDLK_x)
+						{
+							// ESC has been pressed
+							exit = true;
+						}
+						if (event.key.keysym.sym == SDLK_s)
+						{
+							y = y + 10;
+
+						}
+						if (event.key.keysym.sym == SDLK_a)
+						{
+
+							x = x - 10;
+						}
+						if (event.key.keysym.sym == SDLK_w)
+						{
+
+							y = y - 10;
+						}
+						if (event.key.keysym.sym == SDLK_d)
+						{
+							x = x + 10;
+
+						}
+						if (event.key.keysym.sym == SDLK_SPACE) {
+							Bullet.x = x + 25;
+							Bullet.y = y + 25;
+						
+						}
+						
+
+					}
+	
+				}
+				SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+				SDL_RenderClear(renderer);
+
+				SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+				SDL_RenderFillRect(renderer, &rect);
+				//Draw the bullet in loop
+				SDL_SetRenderDrawColor(renderer, 0, 150, 0, 255);
+				SDL_RenderFillRect(renderer, &Bullet);
+				Bullet.x += 1;
 			}
 
 			//Wait two seconds
