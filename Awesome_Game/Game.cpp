@@ -30,7 +30,7 @@ bool Game::Init()
 		keys[i] = KEY_IDLE;
 
 	//Init variables
-	Player.Init(20, WINDOW_HEIGHT >> 1, 50, 20, 5);
+	Player.Init(20, WINDOW_HEIGHT >> 1, 104, 82, 5);
 	idx_shot = 0;
 
 	return true;
@@ -76,7 +76,10 @@ bool Game::Update()
 	{
 		int x, y, w, h;
 		Player.GetRect(&x, &y, &w, &h);
-		Shots[idx_shot].Init(x + w - 10, y + (h >> 1) - 5, 20, 10, 10);
+		Shots[idx_shot].Init(x + 29, y + 3, 56, 20, 10);
+		idx_shot++;
+		idx_shot %= MAX_SHOTS;
+		Shots[idx_shot].Init(x + 29, y + 59, 56, 20, 10);
 		idx_shot++;
 		idx_shot %= MAX_SHOTS;
 	}
