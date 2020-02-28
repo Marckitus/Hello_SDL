@@ -33,6 +33,17 @@ bool Game::Init()
 	Player.Init(20, WINDOW_HEIGHT >> 1, 104, 82, 5);
 	idx_shot = 0;
 
+
+	// load support for the JPG and PNG image formats
+	int flags = IMG_INIT_PNG;
+	int initted = IMG_Init(flags);
+	Surface = IMG_Load("spaceship.png");
+	img_player = SDL_CreateTextureFromSurface(Renderer, Surface);
+	Surface = IMG_Load("shot.png");
+	SDL_CreateTextureFromSurface(Renderer, Surface);
+	Surface = IMG_Load("background.png");
+	SDL_CreateTextureFromSurface(Renderer, Surface);
+	
 	return true;
 }
 void Game::Release()
@@ -109,8 +120,9 @@ void Game::Draw()
 	//Draw player
 	SDL_Rect rc;
 	Player.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
-	SDL_SetRenderDrawColor(Renderer, 0, 192, 0, 255);
-	SDL_RenderFillRect(Renderer, &rc);
+	SDL_RenderCopy(Renderer);
+	//SDL_SetRenderDrawColor(Renderer, 0, 192, 0, 255);
+	//SDL_RenderFillRect(Renderer, &rc);
 
 	//Draw shots
 	SDL_SetRenderDrawColor(Renderer, 192, 0, 0, 255);

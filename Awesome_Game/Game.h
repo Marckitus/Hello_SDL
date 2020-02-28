@@ -29,6 +29,8 @@ public:
 private:
 	SDL_Window* Window;
 	SDL_Renderer* Renderer;
+	SDL_Texture* Texture[3];
+	SDL_Surface* Surface;
 
 	Entity Player, Shots[MAX_SHOTS];
 	int idx_shot;
