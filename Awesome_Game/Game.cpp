@@ -130,8 +130,9 @@ void Game::Draw()
 	{
 		if (Shots[i].IsAlive())
 		{
+			SDL_Rect rc;
 			Shots[i].GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
-			SDL_RenderFillRect(Renderer, &rc);
+			SDL_RenderCopy(Renderer, Texture[1], NULL, &rc);
 		}
 	}
 
