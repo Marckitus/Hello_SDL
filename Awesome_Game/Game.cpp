@@ -38,11 +38,11 @@ bool Game::Init()
 	int flags = IMG_INIT_PNG;
 	int initted = IMG_Init(flags);
 	Surface = IMG_Load("spaceship.png");
-	img_player = SDL_CreateTextureFromSurface(Renderer, Surface);
+	Texture[0] = SDL_CreateTextureFromSurface(Renderer, Surface);
 	Surface = IMG_Load("shot.png");
-	SDL_CreateTextureFromSurface(Renderer, Surface);
+	Texture[1] = SDL_CreateTextureFromSurface(Renderer, Surface);
 	Surface = IMG_Load("background.png");
-	SDL_CreateTextureFromSurface(Renderer, Surface);
+	Texture[2] = SDL_CreateTextureFromSurface(Renderer, Surface);
 	
 	return true;
 }
@@ -120,7 +120,7 @@ void Game::Draw()
 	//Draw player
 	SDL_Rect rc;
 	Player.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
-	SDL_RenderCopy(Renderer);
+	SDL_RenderCopy(Renderer, Texture[0], NULL, &rc);
 	//SDL_SetRenderDrawColor(Renderer, 0, 192, 0, 255);
 	//SDL_RenderFillRect(Renderer, &rc);
 
