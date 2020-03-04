@@ -32,17 +32,21 @@ bool Game::Init()
 	//Init variables
 	Player.Init(20, WINDOW_HEIGHT >> 1, 104, 82, 5);
 	idx_shot = 0;
+	Scene.Init(0, 0, 768, 1024, 0);
 
 
 	// load support for the JPG and PNG image formats
 	int flags = IMG_INIT_PNG;
-	int initted = IMG_Init(flags);
+	IMG_Init(flags);
 	Surface = IMG_Load("spaceship.png");
 	Texture[0] = SDL_CreateTextureFromSurface(Renderer, Surface);
 	Surface = IMG_Load("shot.png");
 	Texture[1] = SDL_CreateTextureFromSurface(Renderer, Surface);
 	Surface = IMG_Load("background.png");
 	Texture[2] = SDL_CreateTextureFromSurface(Renderer, Surface);
+	int bg_width;
+	SDL_QueryTexture(Texture[2], NULL, NULL, &bg_width, NULL);
+	Scene.Init(0, 0, bg_width, WINDOW_HEIGHT, 4);
 	
 	return true;
 }
@@ -50,6 +54,9 @@ void Game::Release()
 {
 	//Clean up all SDL initialized subsystems
 	SDL_Quit();
+	SDL_DestroyTexture(Texture[0]);
+	SDL_DestroyTexture(Texture[1]);
+	SDL_DestroyTexture(Texture[2]);
 }
 bool Game::Input()
 {
@@ -96,6 +103,10 @@ bool Game::Update()
 	}
 
 	//Logic
+	Scene.Move(-1, 0);
+	if (Scene.GetX() <= -Scene.GetWidth()) {
+		Scene.SetX(0);
+	}
 	//Player update
 	Player.Move(fx, fy);
 	//Shots update
@@ -112,13 +123,16 @@ bool Game::Update()
 }
 void Game::Draw()
 {
-	//Set the color used for drawing operations
-	SDL_SetRenderDrawColor(Renderer, 0, 0, 0, 255);
+	SDL_Rect rc;
 	//Clear rendering target
 	SDL_RenderClear(Renderer);
+	Scene.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
+	SDL_RenderCopy(Renderer, Texture[2], NULL, &rc);
+	rc.x += rc.w;
+	SDL_RenderCopy(Renderer, Texture[2], NULL, &rc);
 
 	//Draw player
-	SDL_Rect rc;
+	
 	Player.GetRect(&rc.x, &rc.y, &rc.w, &rc.h);
 	SDL_RenderCopy(Renderer, Texture[0], NULL, &rc);
 	//SDL_SetRenderDrawColor(Renderer, 0, 192, 0, 255);
